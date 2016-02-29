@@ -1,7 +1,4 @@
 # SURGE
-<<<<<<< HEAD
-
-=======
 
 Contact Info:
 
@@ -17,5 +14,3 @@ msilano105@gmail.com
 Brenna Stallings
 brennas@bu.edu
 919-649-1404
-
->>>>>>> 7af5d02c9b55a1e35f8cf082434f3fa73cdaa75c
