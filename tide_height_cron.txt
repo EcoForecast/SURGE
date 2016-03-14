@@ -1,0 +1,2 @@
+MAILTO:brennas@bu.edu
+* 0 * * * /SURGE/pull_tide_data.R
