@@ -1,0 +1,2 @@
+MAILTO="brennas@bu.edu"
+0 0 * * * /SURGE/pull_surge_data.R

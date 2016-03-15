@@ -8,7 +8,8 @@ Contributor:       National Oceanography Centre, Liverpool
 Datum information: The data refer to Admiralty Chart Datum (ACD)
 Parameter code:    ASLVBG02 = Surface elevation (unspecified datum second sensor) of the water body by bubbler tide gauge
   Cycle    Date      Time    ASLVBG02   Residual  
- Number yyyy/mm/dd hh:mi:ssf         f          f 
+ Number yyyy/mm/dd hh:mi:ssf         f         f2 
+
      1) 2015/01/01 00:00:00     2.187     -0.081  
      2) 2015/01/01 00:15:00     2.034     -0.068  
      3) 2015/01/01 00:30:00     1.890     -0.070  
