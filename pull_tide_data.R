@@ -1,4 +1,8 @@
 tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
+tide<-as.numeric(tide_height$f)
+surge<-as.numeric(tide_height$f2)
+
+less.surge<-(tide+surge)
 sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
 dates <- as.Date(sorted_height$yyyy.mm.dd)
 date1 <- as.Date("2015-01-01")
@@ -14,7 +18,7 @@ dtod<-paste(dates[desired_rows] , tod)
 x<- strptime(dtod, format="%Y-%m-%d %H:%M:%S")
 
 
-y <-as.numeric(levels(height$f)[height$f])
+y <-less.surge[desired_rows]
 
 jpeg(file="~/SURGE/web/Tide Height until Now")
 plot(x,y, ylab="Tide Height (m)", xlab="Date", main="Tide height at 15 minute intervals in Newport,UK")
