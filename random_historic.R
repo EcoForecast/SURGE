@@ -12,20 +12,22 @@ y[i] ~ dnorm(x[i],tau_obs)
 }
 
 for(i in 1:n){
-wind.effect[i] ~ dnorm(0,1)
+wind.effect[i] ~ dnorm(wind[i],tau_wind)
 }
 
 #### Process Model
 for(i in 2:n){
-##final total will be???= total <- x[i] + beta*wind.effect[i]*((9.8/y[i])*(25+pressure))
-total <- x[i] + wind.effect[i]
-x[i]~dnorm(x[i-1],tau_add)
+##final total will be???= total <- x[i] + beta*wind.effect[i]*((9.8/y[i])*(25+pressure)) + tau_add
+total <- x[i] + wind.effect[i] + tau_add
+x[i]~dnorm(x[i-1],tau_add)##change to how surge changes
 }
 
 #### Priors
 x[1] ~ dunif(-1,10)
 tau_obs ~ dgamma(a_obs,r_obs)
 tau_add ~ dgamma(a_add,r_add)
+tau_wind ~ dgamma(1,1)
+wind[1] ~ dnorm(0,2##need SD around wind.effect, not wind speed)
 }
 "
 data <- list(y=y,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
