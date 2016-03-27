@@ -1,7 +1,8 @@
 library(rjags)
 beta=22535 ##check number, seems ridiculous
 y=y ##pull from tide data
-wind.effect=wind_##something ##pull from wind data 
+wind.effect=hist_wind ##pull from wind data 
+pressure.effect=hist_pres ## pull from pressure data
 
 SurgeHeight = "
 model{
@@ -32,7 +33,7 @@ tau_add ~ dgamma(a_add,r_add) ##process error
 tau_wind ~ dgamma(1,1) ##obervation error for wind measurements
 wind[1] ~ dnorm(0,3) ##uninformative prior for wind ##3 makes sense w/ units?
 pressure[1] ~ dunif(0,5) ##uninformative prior for pressure
-##what are pressure units, does prior make sense
+##what are pressure units (inches of Hg), does prior make sense
 tau_pressure ~dgamma(1,1) ##obs error for pressure measurement
 ##all taus unknown, so went with same as given taus
 }
