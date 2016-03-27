@@ -1,23 +1,78 @@
 ###Historical Time Series###
 
 ```{r}
+##pull tide data
+tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
+tide<-as.numeric(tide_height$f)
+surge<-as.numeric(tide_height$f2)
 
-SurgeHeight = "
+less.surge<-(tide+surge)
+sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
+dates <- as.Date(sorted_height$yyyy.mm.dd)
+date1 <- as.Date("2015-01-01")
+date2 <- Sys.Date()-365
+
+
+desired_rows <- which(dates >= date1 & dates <= date2)
+height<-sorted_height[desired_rows, ]
+
+library(chron)
+tod<-chron(times=height$hh.mi.ssf)
+dtod<-paste(dates[desired_rows] , tod)
+x<- strptime(dtod, format="%Y-%m-%d %H:%M:%S")
+
+
+y <-less.surge[desired_rows]
+######
+
+## pull weather data
+startdate = as.Date("2014/01/01")
+enddate = as.Date("2014/06/30")
+
+firstpart = "http://www.wunderground.com/history/airport/EGFF/"
+lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
+
+##weather_data = read.csv(paste(firstpart,date,lastpart)) 
+hist_weather_data = list()
+for (i in 0:(enddate-startdate)) {  
+  
+  dateToo = gsub("-","/", startdate+i)
+  hist_weather_data[[i+1]] = read.csv(paste(firstpart,dateToo,lastpart,sep="")) 
+  
+}
+
+hist_wind = unlist(sapply(hist_weather_data,function(x){x$Wind.SpeedMPH},simplify = TRUE))
+hist_pres = unlist(sapply(hist_weather_data,function(x){x$Sea.Level.PressureIn},simplify = TRUE))
+hist_pres[hist_pres < 5] = NA
+dateUTC = unlist(sapply(hist_weather_data,function(x){x$DateUTC},simplify = TRUE))
+
+day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T")
+```
+
+```{r}
+
+SLOSHSurge = "
 
 model{
 
   ##Data Model
+  
+  for (i in 1:n) {
+    
 
+  }
 
-
-
+  
   ##Process Model
 
-
+  ## surge (+ tide) = (water depth*Coriolus*wind speed) * ((gravity/tide height) * (depth + pressure))
+  ## S (+ tide) = (25*901.4*wind speed) * ((9.8/tide height) * (25 + pressure))
 
 
   ##Priors
-
+  
+  ## credible range: -1 to 10m
+  ## prior ~ dunif(-1, 10)
 
 }
 "
