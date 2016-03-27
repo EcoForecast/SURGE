@@ -1,3 +1,5 @@
+## Random Walk Historical Surge Time Series
+
 library(rjags)
 y=y
 RandomWalk = "
