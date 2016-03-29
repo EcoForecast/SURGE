@@ -67,3 +67,9 @@ hist(1/sqrt(out[,1]),main=colnames(out)[1])
 hist(1/sqrt(out[,2]),main=colnames(out)[2])
 plot(out[,1],out[,2],pch=".",xlab=colnames(out)[1],ylab=colnames(out)[2])
 cor(out[,1:2])
+
+jpeg(file="~/SURGE/web/HistoricalRandomWalk")
+plot(time,ci[2,],type='l',ylim=range(y,na.rm=TRUE),ylab="Surge Height 2014 (m)",xlim=time[time.rng])
+dev.off()
+
+
