@@ -16,6 +16,6 @@ x<- strptime(dtod, format="%Y-%m-%d %H:%M:%S")
 
 y <-as.numeric(levels(height$f)[height$f])
 
-jpeg(file="~/SURGE/web/Tide+Surge Height until Now")
+jpeg(file="~/SURGE/Tide+Surge Height until Now")
 plot(x,y, ylab="Tide Height (m)", xlab="Date", main="Tide+Surge height at 15 minute intervals in Newport,UK")
 dev.off()
