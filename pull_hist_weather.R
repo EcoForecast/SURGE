@@ -1,6 +1,6 @@
 
-startdate = as.Date("2014/01/01")
-enddate = as.Date("2014/06/30")
+startdate = as.Date("2014/03/01")
+enddate = as.Date("2014/04/30")
 
 firstpart = "http://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
@@ -23,10 +23,10 @@ day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d
 
 #met = Reduce(function(...) merge(...,all=TRUE),weather_data)
 
-##jpeg(file="~/SURGE/web/WindSpeed.jpg")
+jpeg(file="~/SURGE/WindSpeed")
 plot(day,hist_wind, ylab="Wind Speed (mph)", xlab="Date", main="Historical Wind Speed in 30 min Intervals in Cardiff,UK",type='l')
-##dev.off()
+dev.off()
 
-##jpeg(file="~/SURGE/web/SeaLevelPressure.jpg")
+jpeg(file="~/SURGE/SeaLevelPressure")
 plot(day,hist_pres, ylab="Sea Level Pressure (in)", xlab="Date", main="Historical Sea Level Pressure in 30 min Intervals in Cardiff,UK",type='l')
-##dev.off()
+dev.off()

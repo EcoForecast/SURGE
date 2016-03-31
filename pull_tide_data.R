@@ -5,7 +5,7 @@ surge<-as.numeric(levels(height$f2)[height$f2])
 less.surge<-(tide+surge)
 sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
 dates <- as.Date(sorted_height$yyyy.mm.dd)
-date1 <- as.Date("2015-01-01")
+date1 <- as.Date("2015-03-01")
 date2 <- Sys.Date()-365
 
 

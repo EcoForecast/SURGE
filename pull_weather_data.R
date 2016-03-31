@@ -1,6 +1,6 @@
 todaydate = (Sys.Date() - 365)
 date = gsub("-","/",todaydate)
-startdate = as.Date("2015/01/01")
+startdate = as.Date("2015/03/01")
 
 firstpart = "http://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
@@ -12,7 +12,6 @@ for (i in 0:(todaydate-startdate)) {
   date2 = gsub("-","/", startdate+i)
   weather_data[[i+1]] = read.csv(paste(firstpart,date2,lastpart,sep="")) 
   
-  ## "need finite 'xlim' values" ?
 }
 
 wind = unlist(sapply(weather_data,function(x){x$Wind.SpeedMPH},simplify = TRUE))
