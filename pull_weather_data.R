@@ -5,7 +5,7 @@ startdate = as.Date("2015/03/01")
 firstpart = "http://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
 
-##weather_data = read.csv(paste(firstpart,date,lastpart)) 
+weather_data = read.csv(paste(firstpart,date,lastpart)) 
 weather_data = list()
 for (i in 0:(todaydate-startdate)) {  
   
