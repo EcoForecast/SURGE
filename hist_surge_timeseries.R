@@ -1,6 +1,6 @@
 library(rjags)
 ##beta=22535 ##check number, seems ridiculous
-y=y ##pull from tide data
+tide=hist_tide_height ##pull from tide data
 wind=hist_wind ##pull from wind data 
 pressure=hist_pres ## pull from pressure data
 
@@ -16,13 +16,17 @@ for(i in 1:n){
 wind.effect[i] ~ dnorm(wind[i],tau_wind)
 }
 
+for (i in 1:n){
+tide.effect[i] ~ dnorm(tide[i], tau_tide)
+}
+
 for(i in 1:n){
-pressure.effect[i] ~dnorm(pressure[i], tau_presssure)
+pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
 }
 
 #### Process Model
 for(i in 2:n){
-total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/surge[i-1])*(beta + pressure.effect[i])) 
+total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/tide.effect[i])*(beta + pressure.effect[i])) 
 surge[i]~dnorm(total[i],tau_add)##change to how surge changes
 }
 
@@ -36,16 +40,19 @@ wind[1] ~ dnorm(0,3) ##uninformative prior for wind ##3 makes sense w/ units?
 pressure[1] ~ dunif(10,50) ##uninformative prior for pressure
 ##what are pressure units (inches of Hg), does prior make sense
 tau_pressure ~dgamma(1,.1) ##obs error for pressure measurement
+tau_tide ~ dgamma(1,.1)
+tide[1] ~dnorm(25,0.16)
 ##all taus unknown, so went with same as given taus
 }
 "
-data <- list(y=y,wind.effect=hist_wind,pressure.effect=hist_pres,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
+##define n
+data <- list(tide=tide,wind.effect=hist_wind,pressure.effect=hist_pres,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
 #data <- list(y=y,wind.effect=hist_wind,pressure.effect=hist_pres,n=100,a_obs=1,r_obs=1,a_add=1,r_add=1)
 nchain = 3
 init <- list()
 for(i in 1:nchain){
-  y.samp = sample(y,length(y),replace=TRUE)
-  init[[i]] <- list(tau_add=1/var(diff(y.samp)),tau_obs=5/var(y.samp))
+  tide.samp = sample(tide,length(tide),replace=TRUE)
+  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp))
 }
 j.model   <- jags.model (file = textConnection(SurgeHeight),
                          data = data,
