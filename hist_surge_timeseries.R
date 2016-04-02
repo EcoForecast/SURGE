@@ -3,7 +3,7 @@ library(rjags)
 tide=hist_tide_height ##pull from tide data
 wind=hist_wind ##pull from wind data 
 pressure=hist_pres ## pull from pressure data
-n=length(time)
+n=length(tide)
 SurgeHeight = "
 model{
 
@@ -66,10 +66,10 @@ plot(jags.out)
 
 ## after convergence
 jags.out   <- coda.samples (model = j.model,
-                            variable.names = c("x","tau_add","tau_obs"),
+                            variable.names = c("surge", "tau_add","tau_tide","tau_wind","tau_pressure"),
                             n.iter = 10000,
                             thin = 10)
-time = 1:length(y)
+time = 1:length(tide)
 time.rng = c(1,data$n) ## adjust to zoom in and out
 ciEnvelope <- function(x,ylo,yhi,...){
   polygon(cbind(c(x, rev(x), x[1]), c(ylo, rev(yhi),
@@ -78,13 +78,13 @@ ciEnvelope <- function(x,ylo,yhi,...){
 out <- as.matrix(jags.out)
 ci <- apply(out[,3:ncol(out)],2,quantile,c(0.025,0.5,0.975))
 
-plot(time,ci[2,],type='l',ylim=range(y[1:data$n],na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng])
+plot(time,ci[2,],type='l',ylim=range(tide[1:data$n],na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng])
 ## adjust x-axis label to be monthly if zoomed
 if(diff(time.rng) < 100){ 
   axis.Date(1, at=seq(time[time.rng[1]],time[time.rng[2]],by='month'), format = "%Y-%m")
 }
 ciEnvelope(time,ci[1,],ci[3,],col="lightBlue")
-points(time,y[1,data$n],pch="+",cex=0.5)
+points(time,tide[1,data$n],pch="+",cex=0.5)
 
 
 layout(matrix(c(1,2,3,3),2,2,byrow=TRUE))
