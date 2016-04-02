@@ -20,9 +20,9 @@ for (i in 1:n){
 tide.effect[i] ~ dnorm(tide[i], tau_tide)
 }
 
-##for(i in 1:n){
-##pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
-##}
+for(i in 1:n){
+pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
+}
 
 #### Process Model
 for(i in 2:n){
@@ -52,14 +52,14 @@ nchain = 3
 init <- list()
 for(i in 1:nchain){
   tide.samp = sample(tide,length(tide),replace=TRUE)
-  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp),tau_wind=1/var(diff(tide.samp)))
+  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp),tau_wind=1/var(diff(tide.samp)),tau_pressure=1/var(diff(tide.samp)))
 }
 j.model   <- jags.model (file = textConnection(SurgeHeight),
                          data = data,
                          init = init,
                          n.chains = 3)
 jags.out   <- coda.samples (model = j.model,
-                            variable.names = c("tau_add","tau_tide","tau_wind"),
+                            variable.names = c("tau_add","tau_tide","tau_wind","tau_pressure"),
                             n.iter = 100)
 plot(jags.out)
 
