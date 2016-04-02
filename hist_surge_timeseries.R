@@ -21,7 +21,7 @@ tide.effect[i] ~ dnorm(tide[i], tau_tide)
 }
 
 for(i in 1:n){
-pressure.effect[i] ~dnorm(pressure[i], tau_presssure)
+pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
 }
 
 #### Process Model
@@ -45,13 +45,14 @@ tide[1] ~dnorm(25,0.16)
 ##all taus unknown, so went with same as given taus
 }
 "
-data <- list(y=y,wind.effect=hist_wind,pressure.effect=hist_pres,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
+##define n
+data <- list(tide=tide,wind.effect=hist_wind,pressure.effect=hist_pres,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
 #data <- list(y=y,wind.effect=hist_wind,pressure.effect=hist_pres,n=100,a_obs=1,r_obs=1,a_add=1,r_add=1)
 nchain = 3
 init <- list()
 for(i in 1:nchain){
-  y.samp = sample(y,length(y),replace=TRUE)
-  init[[i]] <- list(tau_add=1/var(diff(y.samp)),tau_obs=5/var(y.samp))
+  tide.samp = sample(tide,length(tide),replace=TRUE)
+  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp))
 }
 j.model   <- jags.model (file = textConnection(SurgeHeight),
                          data = data,
