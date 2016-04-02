@@ -1,41 +1,41 @@
 library(rjags)
 ##beta=22535 ##check number, seems ridiculous
 y=y ##pull from tide data
-wind.effect=hist_wind ##pull from wind data 
-pressure.effect=hist_pres ## pull from pressure data
+wind=hist_wind ##pull from wind data 
+pressure=hist_pres ## pull from pressure data
 
 SurgeHeight = "
 model{
 
 #### Data Model
+##for(i in 1:n){
+##y[i] ~ dnorm(x[i],tau_obs)
+##}
+
 for(i in 1:n){
-y[i] ~ dnorm(x[i],tau_obs)
+wind.effect[i] ~ dnorm(wind[i],tau_wind)
 }
 
-##for(i in 1:n){
-##wind.effect[i] ~ dnorm(wind[i],tau_wind)
-##}
-
-##for(i in 1:n){
-##pressure.effect[i] ~dnorm(pressure[i], tau_presssure)
-##}
+for(i in 1:n){
+pressure.effect[i] ~dnorm(pressure[i], tau_presssure)
+}
 
 #### Process Model
 for(i in 2:n){
-total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/x[i-1])*(beta + pressure.effect[i])) 
-x[i]~dnorm(total[i],tau_add)##change to how surge changes
+total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/surge[i-1])*(beta + pressure.effect[i])) 
+surge[i]~dnorm(total[i],tau_add)##change to how surge changes
 }
 
 #### Priors
-x[1] ~ dunif(-1,10)
+surge[1] ~ dunif(-1,10)
 tau_obs ~ dgamma(a_obs,r_obs) ##observation error for tide height
 tau_add ~ dgamma(a_add,r_add) ##process error
 beta ~ dnorm(25,0.16)
-##tau_wind ~ dgamma(1,1) ##obervation error for wind measurements
-##wind[1] ~ dnorm(0,3) ##uninformative prior for wind ##3 makes sense w/ units?
-##pressure[1] ~ dunif(0,5) ##uninformative prior for pressure
+tau_wind ~ dgamma(1,.5) ##obervation error for wind measurements
+wind[1] ~ dnorm(0,3) ##uninformative prior for wind ##3 makes sense w/ units?
+pressure[1] ~ dunif(10,50) ##uninformative prior for pressure
 ##what are pressure units (inches of Hg), does prior make sense
-##tau_pressure ~dgamma(1,1) ##obs error for pressure measurement
+tau_pressure ~dgamma(1,.1) ##obs error for pressure measurement
 ##all taus unknown, so went with same as given taus
 }
 "
