@@ -1,34 +1,34 @@
 ## Random Walk Historical Surge Time Series
 
 library(rjags)
-y=y
+tide=tide
 RandomWalk = "
 model{
 
 #### Data Model
 for(i in 1:n){
-y[i] ~ dnorm(x[i],tau_obs)
+tide[i] ~ dnorm(surge[i],tau_obs)
 }
 
 #### Process Model
 for(i in 2:n){
-x[i]~dnorm(x[i-1],tau_add)
+surge[i]~dnorm(surge[i-1],tau_add)
 }
 
 #### Priors
-x[1] ~ dunif(-1,10)
+surge[1] ~ dunif(-1,10)
 tau_obs ~ dgamma(a_obs,r_obs)
 tau_add ~ dgamma(a_add,r_add)
 }
 "
 
 ## MCMC
-data <- list(y=y,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
+data <- list(tide=tide,n=length(tide),a_obs=1,r_obs=1,a_add=1,r_add=1)
 nchain = 3
 init <- list()
 for(i in 1:nchain){
-  y.samp = sample(y,length(y),replace=TRUE)
-  init[[i]] <- list(tau_add=1/var(diff(y.samp)),tau_obs=5/var(y.samp))
+  tide.samp = sample(tide,length(tide),replace=TRUE)
+  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_obs=5/var(tide.samp))
 }
 j.model   <- jags.model (file = textConnection(RandomWalk),
                          data = data,
@@ -41,10 +41,10 @@ plot(jags.out)
 
 ## after convergence
 jags.out   <- coda.samples (model = j.model,
-                            variable.names = c("x","tau_add","tau_obs"),
+                            variable.names = c("surge","tau_add","tau_obs"),
                             n.iter = 10000,
                             thin = 10)
-time = 1:length(y)
+time = 1:length(tide)
 time.rng = c(1,length(time)) ## adjust to zoom in and out
 ciEnvelope <- function(x,ylo,yhi,...){
   polygon(cbind(c(x, rev(x), x[1]), c(ylo, rev(yhi),
@@ -69,7 +69,7 @@ plot(out[,1],out[,2],pch=".",xlab=colnames(out)[1],ylab=colnames(out)[2])
 cor(out[,1:2])
 
 jpeg(file="~/SURGE/web/HistoricalRandomWalk")
-plot(time,ci[2,],type='l',ylim=range(y,na.rm=TRUE),ylab="Surge Height 2014 (m)",xlim=time[time.rng])
+plot(time,ci[2,],type='l',ylim=range(tide,na.rm=TRUE),ylab="Surge Height 2014 (m)",xlim=time[time.rng])
 dev.off()
 
 
