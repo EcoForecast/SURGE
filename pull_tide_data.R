@@ -1,6 +1,6 @@
 tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
-tide<-as.numeric(levels(height$f)[height$f])
-surge<-as.numeric(levels(height$f2)[height$f2])
+tide<-as.numeric(levels(tide_height$f)[tide_height$f])
+surge<-as.numeric(levels(tide_height$f2)[tide_height$f2])
 
 less.surge<-(tide+surge)
 sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
