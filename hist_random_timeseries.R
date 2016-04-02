@@ -53,13 +53,13 @@ ciEnvelope <- function(x,ylo,yhi,...){
 out <- as.matrix(jags.out)
 ci <- apply(out[,3:ncol(out)],2,quantile,c(0.025,0.5,0.975))
 
-plot(time,ci[2,],type='l',ylim=range(y,na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng])
+plot(time,ci[2,],type='l',ylim=range(tide,na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng])
 ## adjust x-axis label to be monthly if zoomed
 if(diff(time.rng) < 100){ 
   axis.Date(1, at=seq(time[time.rng[1]],time[time.rng[2]],by='month'), format = "%Y-%m")
 }
 ciEnvelope(time,ci[1,],ci[3,],col="lightBlue")
-points(time,y,pch="+",cex=0.5)
+points(time,tide,pch="+",cex=0.5)
 
 
 layout(matrix(c(1,2,3,3),2,2,byrow=TRUE))
