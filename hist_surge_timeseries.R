@@ -3,7 +3,7 @@ library(rjags)
 tide=hist_tide_height ##pull from tide data
 wind=hist_wind ##pull from wind data 
 pressure=hist_pres ## pull from pressure data
-
+n=length(time)
 SurgeHeight = "
 model{
 
@@ -20,46 +20,46 @@ for (i in 1:n){
 tide.effect[i] ~ dnorm(tide[i], tau_tide)
 }
 
-for(i in 1:n){
-pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
-}
+##for(i in 1:n){
+##pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
+##}
 
 #### Process Model
 for(i in 2:n){
-total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/tide.effect[i])*(beta + pressure.effect[i])) 
+total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/tide.effect[i])*(beta + 10)) 
 surge[i]~dnorm(total[i],tau_add)##change to how surge changes
 }
 
 #### Priors
 surge[1] ~ dunif(-1,10)
-tau_obs ~ dgamma(a_obs,r_obs) ##observation error for tide height
+##tau_obs ~ dgamma(a_obs,r_obs) ##observation error for tide height
 tau_add ~ dgamma(a_add,r_add) ##process error
 beta ~ dnorm(25,0.16)
 tau_wind ~ dgamma(1,.5) ##obervation error for wind measurements
 wind[1] ~ dnorm(0,3) ##uninformative prior for wind ##3 makes sense w/ units?
-pressure[1] ~ dunif(10,50) ##uninformative prior for pressure
+##pressure[1] ~ dunif(10,50) ##uninformative prior for pressure
 ##what are pressure units (inches of Hg), does prior make sense
-tau_pressure ~dgamma(1,.1) ##obs error for pressure measurement
+##tau_pressure ~dgamma(1,.1) ##obs error for pressure measurement
 tau_tide ~ dgamma(1,.1)
 tide[1] ~dnorm(25,0.16)
 ##all taus unknown, so went with same as given taus
 }
 "
-##define n
-data <- list(tide=tide,wind.effect=hist_wind,pressure.effect=hist_pres,n=length(y),a_obs=1,r_obs=1,a_add=1,r_add=1)
+
+data <- list(tide=tide,wind=wind,pressure=hist_pres,n=length(tide),a_obs=1,r_obs=1,a_add=1,r_add=1)
 #data <- list(y=y,wind.effect=hist_wind,pressure.effect=hist_pres,n=100,a_obs=1,r_obs=1,a_add=1,r_add=1)
 nchain = 3
 init <- list()
 for(i in 1:nchain){
   tide.samp = sample(tide,length(tide),replace=TRUE)
-  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp))
+  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp),tau_wind=1/var(diff(tide.samp)))
 }
 j.model   <- jags.model (file = textConnection(SurgeHeight),
                          data = data,
                          init = init,
                          n.chains = 3)
 jags.out   <- coda.samples (model = j.model,
-                            variable.names = c("tau_add","tau_obs"),
+                            variable.names = c("tau_add","tau_tide","tau_wind"),
                             n.iter = 100)
 plot(jags.out)
 
