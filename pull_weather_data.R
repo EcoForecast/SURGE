@@ -1,17 +1,24 @@
+library(RCurl)
 todaydate = (Sys.Date() - 365)
 date = gsub("-","/",todaydate)
 startdate = as.Date("2015/03/01")
 
-firstpart = "http://www.wunderground.com/history/airport/EGFF/"
+firstpart = "https://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
 
-##weather_data = read.csv(paste(firstpart,date,lastpart)) 
+
+#weather_data = read.csv(paste(firstpart,date,lastpart)) 
 weather_data = list()
-for (i in 0:(todaydate-startdate)) {  
-  
+load("weather_data.Rdata")
+start = i
+for (i in start:(todaydate-startdate)) {  
+  print(i)
   date2 = gsub("-","/", startdate+i)
-  weather_data[[i+1]] = read.csv(paste(firstpart,date2,lastpart,sep="")) 
-  
+  met.url = paste(firstpart,date2,lastpart,sep="")
+ # system(paste0("cd met; wget ",met.url))
+  x = getURL(met.url)
+  weather_data[[i+1]] = read.csv(text=x) 
+ save(i,weather_data,file="weather_data.Rdata")
 }
 
 wind = unlist(sapply(weather_data,function(x){x$Wind.SpeedMPH},simplify = TRUE))
@@ -30,4 +37,5 @@ jpeg(file="~/SURGE/web/WindSpeed.jpg")
 jpeg(file="~/SURGE/web/SeaLevelPressure.jpg")
           plot(day,pres, ylab="Sea Level Pressure (in)", xlab="Date", main="Sea Level Pressure in 30 min Intervals in Cardiff,UK",type='l')
 dev.off()
+
           
