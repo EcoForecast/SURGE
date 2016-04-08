@@ -35,7 +35,12 @@ jpeg(file="~/SURGE/web/WindSpeed.jpg")
      dev.off()
      
 jpeg(file="~/SURGE/web/SeaLevelPressure.jpg")
+<<<<<<< HEAD
           plot(day,pres, ylab="Sea Level Pressure (in)", xlab="Date", main="Sea Level Pressure in 30 min Intervals in Cardiff,UK",type='l')
 dev.off()
+=======
+     plot(day,pres, ylab="Sea Level Pressure (in)", xlab="Date", main="Sea Level Pressure in 30 min Intervals in Cardiff,UK",type='l')
+     dev.off()
+>>>>>>> e0b3784309be555d28e508e73d0439c74e64402e
 
           
