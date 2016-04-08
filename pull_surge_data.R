@@ -18,6 +18,5 @@ surgeAndTide <-as.numeric(levels(height$f)[height$f])
 
 
 jpeg(file="~/SURGE/web/Tide+Surge_Height_until_Now.jpg")
-
 plot(x,surgeAndTide, ylab="Tide Height (m)", xlab="Date", main="Tide+Surge height at 15 minute intervals in Newport,UK")
 dev.off()

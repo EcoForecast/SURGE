@@ -1,17 +1,23 @@
-
+library(RCurl)
 startdate = as.Date("2014/03/01")
 enddate = as.Date("2014/04/30")
 
-firstpart = "http://www.wunderground.com/history/airport/EGFF/"
+firstpart = "https://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
 
 ##weather_data = read.csv(paste(firstpart,date,lastpart)) 
 hist_weather_data = list()
-for (i in 0:(enddate-startdate)) {  
+load("hist_weather_data.Rdata")
+start = i
+for (i in start:(enddate-startdate)) {  
   
-  date2 = gsub("-","/", startdate+i)
-  hist_weather_data[[i+1]] = read.csv(paste(firstpart,date2,lastpart,sep="")) 
-  
+  print(i)
+  date2 = gsub("-","/", startdate+i) 
+  met.url = paste(firstpart,date2,lastpart,sep="")
+  # system(paste0("cd met; wget ",met.url))
+  x = getURL(met.url)
+  hist_weather_data[[i+1]] = read.csv(text=x) 
+  save(i,hist_weather_data,file="hist_weather_data.Rdata")
 }
 
 hist_wind = unlist(sapply(hist_weather_data,function(x){x$Wind.SpeedMPH},simplify = TRUE))

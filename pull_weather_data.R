@@ -8,7 +8,13 @@ lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+
 
 ##weather_data = read.csv(paste(firstpart,date,lastpart)) 
 weather_data = list()
+<<<<<<< HEAD
 for (i in 0:(todaydate-startdate)) {  
+=======
+load("weather_data.Rdata")
+start = i
+for (i in start:(todaydate-startdate)) {  
+>>>>>>> e0b3784309be555d28e508e73d0439c74e64402e
   print(i)
   date2 = gsub("-","/", startdate+i)
   met.url = paste(firstpart,date2,lastpart,sep="")
@@ -32,7 +38,8 @@ jpeg(file="~/SURGE/web/WindSpeed.jpg")
      dev.off()
      
 jpeg(file="~/SURGE/web/SeaLevelPressure.jpg")
-          plot(day,pres, ylab="Sea Level Pressure (in)", xlab="Date", main="Sea Level Pressure in 30 min Intervals in Cardiff,UK",type='l')
-dev.off()
+
+     plot(day,pres, ylab="Sea Level Pressure (in)", xlab="Date", main="Sea Level Pressure in 30 min Intervals in Cardiff,UK",type='l')
+     dev.off()
 
           
