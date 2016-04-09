@@ -1,6 +1,7 @@
 library(rjags)
 ##beta=22535 ##check number, seems ridiculous
 tide=hist_tide_height ##pull from tide data
+##as.numeric(levels(tide_height$f)[tide_height$f]) ##use to convert tide to numeric?
 wind=hist_wind ##pull from wind data 
 pressure=hist_pres ## pull from pressure data
 n=length(tide)
@@ -52,7 +53,8 @@ nchain = 3
 init <- list()
 for(i in 1:nchain){
   tide.samp = sample(tide,length(tide),replace=TRUE)
-  init[[i]] <- list(tau_add=1/var(diff(tide.samp)),tau_tide=1/var(tide.samp),tau_wind=1/var(diff(tide.samp)),tau_pressure=1/var(diff(tide.samp)))
+  samp = as.numeric(as.character(tide.samp$f2))
+  init[[i]] <- list(tau_add=1/var(diff(samp)),tau_tide=1/var(samp),tau_wind=1/var(diff(samp)),tau_pressure=1/var(diff(samp)))
 }
 j.model   <- jags.model (file = textConnection(SurgeHeight),
                          data = data,
