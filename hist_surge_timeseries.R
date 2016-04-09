@@ -1,6 +1,7 @@
 library(rjags)
 ##beta=22535 ##check number, seems ridiculous
 tide=hist_tide_height ##pull from tide data
+##as.numeric(levels(tide_height$f)[tide_height$f]) ##use to convert tide to numeric?
 wind=hist_wind ##pull from wind data 
 pressure=hist_pres ## pull from pressure data
 n=length(tide)
