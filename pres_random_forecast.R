@@ -40,7 +40,7 @@ tau_add ~ dgamma(a_add,r_add)
 "
 ##creates vectors of proper length
 time <- 1:length(tide)
-forecast.time <- 1:(length(tide)+672)
+time.fore <- 1:(length(tide)+672)
 none <- rep(NA, 672)
 tide.fore<- append(tide, none, after = length(tide))##creates vector with data, then NAs filled in after
 
@@ -59,7 +59,7 @@ j.model.fore   <- jags.model (file = textConnection(RandomWalk),
 
 jags.out.fore   <- coda.samples (model = j.model.fore,
                             variable.names = c("surge","tau_add","tau_obs"),
-                            n.iter = 100
+                            n.iter = 1000
                             )
 
 ##summary(jags.out.fore, quantiles = c(0.025, 0.25, 0.5, 0.75, 0.975))
@@ -77,7 +77,7 @@ ciEnvelope <- function(x,ylo,yhi,...){
 
 ci <- apply(out.pres.random.fore[,3:ncol(out.pres.random.fore)],2,quantile,c(0.025,0.5,0.975))
 
-##final plat, it works!
+##final part, it works!
 jpeg(file="~/SURGE/web/Present_RandomWalk_Output_Forecast.jpg")
 plot(time.fore,ci[2,],type='l',ylim=range(tide,na.rm=TRUE),ylab="Surge Height",xlim=time.fore[time.rng.fore])
 ## adjust x-axis label to be monthly if zoomed
@@ -85,5 +85,5 @@ if(diff(time.rng.fore) < 100){
   axis.Date(1, at=seq(time.fore[time.rng.fore[1]],time.fore[time.rng.fore[2]],by='month'), format = "%Y-%m")
 }
 ciEnvelope(time.fore,ci[1,],ci[3,],col="red")
-points(time,tide,pch="+",cex=0.5)
+points(time,tide,pch="+",cex=0.5,col="blue")
 dev.off()
