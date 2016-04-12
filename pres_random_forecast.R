@@ -34,8 +34,8 @@ surge[i]~dnorm(surge[i-1],tau_add)
 
 #### Priors
 surge[1] ~ dunif(-1,10)
-tau_obs ~ dgamma(a_obs,r_obs)
-tau_add ~ dgamma(a_add,r_add)
+tau_obs ~ dgamma(a_obs,r_obs)  ## observation error
+tau_add ~ dgamma(a_add,r_add)  ## process error
 }
 "
 ##creates vectors of proper length
@@ -86,4 +86,19 @@ if(diff(time.rng.fore) < 100){
 }
 ciEnvelope(time.fore,ci[1,],ci[3,],col="red")
 points(time,tide,pch="+",cex=0.5,col="blue")
+dev.off()
+
+## obs vs process error partitioning
+
+## following adapted from lab 7
+prec = out.pres.random.fore[,grep("tau",colnames(out.pres.random.fore))]
+for(i in 1:ncol(prec)){
+  hist(1/sqrt(prec[,i]),main=colnames(prec)[i])
+}
+cor(prec)
+pairs(prec)
+
+## plots a big mess but plots
+jpeg(file="~/SURGE/web/Present_RandomWalk_Forecast_Error_Partition.jpg")
+plot(prec[,2],prec[,1],ylim=range(prec[,1],na.rm=TRUE),ylab="Process Error",xlim=range(prec[,2], na.rm=TRUE),xlab="Observation Error")
 dev.off()
