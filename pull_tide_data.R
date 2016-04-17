@@ -15,7 +15,7 @@ height<-sorted_height[desired_rows, ]
 library(chron)
 tod<-chron(times=height$hh.mi.ssf)
 dtod<-paste(dates[desired_rows] , tod)
-x<- strptime(dtod, format="%Y-%m-%d %H:%M:%S")
+x<- strptime(dtod, format="%Y-%m-%d %H:%M:%S",tz="GMT")
 
 
 tide <-less.surge[desired_rows]
