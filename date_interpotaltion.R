@@ -29,7 +29,7 @@ pres = unlist(sapply(weather_data,function(x){x$Sea.Level.PressureIn},simplify =
 pres[pres < 5] = NA
 dateUTC = unlist(sapply(weather_data,function(x){x$DateUTC},simplify = TRUE))
 
-day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T")
+day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T",tz="GMT")
 
 tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
 tideFormat<-as.numeric(levels(tide_height$f)[tide_height$f])
