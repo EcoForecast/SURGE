@@ -10,7 +10,7 @@ for (i in 0:(todaydate-startdate)) {
   for (i in start:(todaydate-startdate)) {  
     
     print(i)
-    tide_data[[i+1]] = read.csv("~/SURGE/2014 tide height data/2014NHA.txt") 
+    tide_data[[i+1]] = read.csv("~/SURGE/tide height data/2015NHA.txt") 
     save(i,tide_data,file="tide_data.Rdata")
     }
 }
