@@ -60,7 +60,7 @@ met = merge(tide.ts,surge.ts,wind.ts,pres.ts)
 met$wind.ts <- na.approx(met$wind.ts,rule=2)
 met$pres.ts <- na.approx(met$pres.ts,rule=2)
 data_times <- met[index(tide.ts),]
-
+save(data_times, file="data_times_intepolated")
 pressure<-as.numeric(data_times$pres)
 wind<-as.numeric(data_times$wind)
 
@@ -117,7 +117,7 @@ jags.out   <- coda.samples (model = j.model,
 ##summary(jags.out)
 
 out.pres.driven <- as.matrix(jags.out)
-##save(out.pres.driven, file="out.pres.driven.ofJAGS")
+save(out.pres.driven, file="out.pres.driven.ofJAGS")
 
 
 time = 1:length(surge)
@@ -136,5 +136,5 @@ if(diff(time.rng) < 100){
   axis.Date(1, at=seq(time[time.rng[1]],time[time.rng[2]],by='month'), format = "%Y-%m")
 }
 ciEnvelope(time,ci[1,],ci[3,],col="red")
-points(time,surge,pch="+",cex=0.5)
+points(time,surge,pch="+",cex=0.5,col="lightblue")
 dev.off()
