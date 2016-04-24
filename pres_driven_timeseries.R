@@ -130,7 +130,7 @@ ciEnvelope <- function(x,ylo,yhi,...){
 ci <- apply(out.pres.driven[,3:ncol(out.pres.driven)],2,quantile,c(0.025,0.5,0.975))
 ci<-ci[,1:length(time)]
 jpeg(file="~/SURGE/web/Present_DrivenWalk_Output.jpg")
-plot(time,ci[2,],type='l',ylim=range(-10:10,na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng])
+plot(time,ci[2,],type='l',ylim=range(-10:10,na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng], main="Driven Output up to Now")
 ## adjust x-axis label to be monthly if zoomed
 if(diff(time.rng) < 100){ 
   axis.Date(1, at=seq(time[time.rng[1]],time[time.rng[2]],by='month'), format = "%Y-%m")
