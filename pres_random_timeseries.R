@@ -17,6 +17,7 @@ x<- strptime(dtod, format="%Y-%m-%d %H:%M:%S")
 surgeAndTide <-as.numeric(levels(height$f)[height$f])
 
 
+
 library(rjags)
 
 RandomWalk = "
@@ -54,8 +55,7 @@ j.model   <- jags.model (file = textConnection(RandomWalk),
 
 jags.out   <- coda.samples (model = j.model,
                             variable.names = c("surge","tau_add","tau_obs"),
-                            n.iter = 100,
-)
+                            n.iter = 100)
 summary(jags.out)
 
 out.pres.random <- as.matrix(jags.out)
