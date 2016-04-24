@@ -29,7 +29,7 @@ pres = unlist(sapply(weather_data,function(x){x$Sea.Level.PressureIn},simplify =
 pres[pres < 5] = NA
 dateUTC = unlist(sapply(weather_data,function(x){x$DateUTC},simplify = TRUE))
 
-day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T")
+day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T",tz="GMT")
 
 tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
 tideFormat<-as.numeric(levels(tide_height$f)[tide_height$f])
@@ -38,11 +38,11 @@ surgeFormat<-as.numeric(levels(tide_height$f2)[tide_height$f2])
 less.surge<-(tideFormat+surgeFormat)
 sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
 dates <- as.Date(sorted_height$yyyy.mm.dd)
-date1 <- as.Date("2015-03-01")
-date2 <- Sys.Date()-365
 
 
-desired_rows <- which(dates >= date1 & dates <= date2)
+
+
+desired_rows <- which(dates >= startdate & dates <= todaydate)
 height<-sorted_height[desired_rows, ]
 
 library(chron)
