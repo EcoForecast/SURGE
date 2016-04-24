@@ -80,3 +80,4 @@ if(diff(time.rng) < 100){
 ciEnvelope(time,ci[1,],ci[3,],col="red")
 points(time,surgeAndTide,pch="+",cex=0.5)
 dev.off()
+#
