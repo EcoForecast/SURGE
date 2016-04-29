@@ -19,8 +19,6 @@ brennas@bu.edu
 Our website is 54.174.19.98/SURGE
 
 
-The cron schedule for tide height data is everyday at midnight. It runs the file named pull_height_data. 
->>>>>>> a788359164f869c818ec896d986a176e33cfaf24
-=======
+
 The cron schedules for tide height data and weather data is everyday at midnight. They run the files named pull_height_data and pull_weather_data. 
->>>>>>> cc63ce757bf2b6687e7c5ac2f920c821b58066b0
+The chron schedule for wind and tide data is everyday at midnight. It runs the file named pull_weather_data.

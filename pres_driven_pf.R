@@ -2,7 +2,7 @@ install.packages(smfsb)
 library(smfsb)
 
 ne = 200
-## number of ensambles
+## number of ensembles
 
 ciEnvelope <- function(x,ylo,yhi,...){
   polygon(cbind(c(x, rev(x), x[1]), c(ylo, rev(yhi),
@@ -25,7 +25,7 @@ wtd.quantile <- function(x,wt,q){
 model = out.pres.driven
 model.ci = apply(model,2,quantile,c(0.025,0.5,0.975))
 data= data$surge_data
-data.sd = rep(1, length(data)) ## replace with real values
+data.sd = rep(1.767434, length(data)) ## sd of tide_height
 Msel = 1:ncol(model.ci)
 
 ## calculate the cumulative likelihoods
@@ -34,7 +34,7 @@ Msel = 1:ncol(model.ci)
 Surgelike = array(NA,dim(model))
 
 sel=1:ncol(model.ci)
-for(i in 1:ne){
+for(i in 1:nrow(model)){
   Surgelike[i,] = dnorm(model[i,],data[sel],data.sd[sel],log=TRUE)  ## calculate log likelihoods
   Surgelike[i,is.na(Surgelike[i,])] = 0       ## missing data as weight 1; log(1)=0
   Surgelike[i,] = exp(cumsum(Surgelike[i,]))  ## convert to cumulative
@@ -56,8 +56,8 @@ plot(time[Msel],model.ci[2,],ylim=range(c(range(model.ci),range(data,na.rm=TRUE)
 ciEnvelope(time[Msel],model.ci[1,],model.ci[3,],col=col.alpha("lightGrey",0.5))
 ciEnvelope(time[Msel],Surgepf[1,],Surgepf[3,],col=col.alpha("lightBlue",0.5))
 points(time,data)    
-for(i in 1:length(data)){
-  if(!is.na(QC[i])){
-    lines(rep(time[i],2),LAIr[i]+c(-1,1)*data.sd[i])
-  }
-}
+##for(i in 1:length(data)){
+##  if(!is.na(QC[i])){
+##    lines(rep(time[i],2),LAIr[i]+c(-1,1)*data.sd[i])
+##  }
+##}

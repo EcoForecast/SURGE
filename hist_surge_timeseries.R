@@ -1,5 +1,5 @@
 library(rjags)
-##beta=22535 ##check number, seems ridiculous
+
 tide=hist_tide_height ##pull from tide data
 ##as.numeric(levels(tide_height$f)[tide_height$f]) ##use to convert tide to numeric?
 wind=hist_wind ##pull from wind data 
@@ -9,9 +9,6 @@ SurgeHeight = "
 model{
 
 #### Data Model
-##for(i in 1:n){
-##y[i] ~ dnorm(x[i],tau_obs)
-##}
 
 for(i in 1:n){
 wind.effect[i] ~ dnorm(wind[i],tau_wind)
@@ -27,7 +24,7 @@ pressure.effect[i] ~dnorm(pressure[i], tau_pressure)
 
 #### Process Model
 for(i in 2:n){
-total[i] <- (beta * 901.4 * wind.effect[i] ) * ((9.8/tide.effect[i])*(beta + 10)) 
+total[i] <- (surge[i-1]+(beta * 901.4 * wind.effect[i] ) * ((9.8/tide.effect[i])*(beta + 10)))/2 
 surge[i]~dnorm(total[i],tau_add)##change to how surge changes
 }
 
