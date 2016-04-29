@@ -112,7 +112,7 @@ j.model   <- jags.model (file = textConnection(RandomWalk),
                          n.chains = 3)
 
 jags.out   <- coda.samples (model = j.model,
-                            variable.names = c("surge_final","tau_add","tau_obs","tau_pres","tau_wind"),
+                            variable.names = c("surge_final","tau_add","tau_obs","tau_pres","tau_wind","beta"),
                             n.iter = 100)
 ##summary(jags.out)
 
