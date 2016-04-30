@@ -1,7 +1,7 @@
 tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
 sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
 dates <- as.Date(sorted_height$yyyy.mm.dd)
-date1 <- as.Date("2015-03-01")
+date1 <- as.Date("2015-04-01")
 date2 <- Sys.Date()-365
 
 

@@ -2,7 +2,7 @@ library(RCurl)
 ##Pull weather data
 todaydate = (Sys.Date() - 365)
 date = gsub("-","/",todaydate)
-startdate = as.Date("2015/03/01")
+startdate = as.Date("2015/04/01")
 
 firstpart = "https://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"

@@ -1,7 +1,7 @@
 tide_height = read.csv("~/SURGE/tide height data/2015NHA.txt", sep="", skip="10")
 sorted_height<-tide_height[order(tide_height$yyyy.mm.dd),]
 dates <- as.Date(sorted_height$yyyy.mm.dd)
-date1 <- as.Date("2015-03-01")
+date1 <- as.Date("2015-04-01")
 date2 <- Sys.Date()-365
 
 
@@ -56,7 +56,7 @@ j.model   <- jags.model (file = textConnection(RandomWalk),
 jags.out   <- coda.samples (model = j.model,
                             variable.names = c("surge","tau_add","tau_obs"),
                             n.iter = 100)
-summary(jags.out)
+##summary(jags.out)
 
 out.pres.random <- as.matrix(jags.out)
 save(out.pres.random, file="out.pres.random.ofJAGS")
@@ -80,4 +80,4 @@ if(diff(time.rng) < 100){
 ciEnvelope(time,ci[1,],ci[3,],col="red")
 points(time,surgeAndTide,pch="+",cex=0.5)
 dev.off()
-#
+
