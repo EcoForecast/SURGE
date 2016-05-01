@@ -60,7 +60,7 @@ met = merge(tide.ts,surge.ts,wind.ts,pres.ts)
 met$wind.ts <- na.approx(met$wind.ts,rule=2)
 met$pres.ts <- na.approx(met$pres.ts,rule=2)
 data_times <- met[index(tide.ts),]
-save(data_times, file="data_times_intepolated")
+
 pressure<-as.numeric(data_times$pres)
 wind<-as.numeric(data_times$wind)
 
@@ -68,12 +68,12 @@ wind<-as.numeric(data_times$wind)
 library(rjags)
 
 
-RandomWalk = "
+SurgeModel = "
 model{
 
 #### Data Model
 for(i in 1:n){
-surge.effect[i] ~ dnorm(surge_data[i],tau_obs)
+tide.effect[i] ~ dnorm(tide_data[i],tau_obs)
 }
 for(i in 1:n){
 pressure.effect[i] ~ dnorm(pressure_data[i],tau_pres)
@@ -84,7 +84,7 @@ wind.effect[i] ~ dnorm(wind_data[i],tau_wind)
 
 #### Process Model
 for(i in 2:n){
-surge[i]<-(wind.effect[i]/beta ) * (9.8/(surge.effect[i]))*(pressure.effect[i]/beta)
+surge[i]<-(wind.effect[i]/beta ) * (9.8/(tide.effect[i]))*(pressure.effect[i]/beta)
 surge_final[i]~dnorm(((surge_final[i-1]+surge[i])/2),tau_add)
 }
 
@@ -98,15 +98,15 @@ beta ~ dnorm(25,0.16)
 }
 "
 
-## MCMC
-data <- list(surge_data=surge,pressure_data=pressure,wind_data=wind, n=length(surge),a_obs=1,r_obs=1,a_add=1,r_add=1)
+## MCMC       
+data <- list(tide_data=tide,pressure_data=pressure,wind_data=wind, n=length(surge),a_obs=1,r_obs=1,a_add=1,r_add=1)
 nchain = 3
 init <- list()
 for(i in 1:nchain){
   surge.samp = sample(surge,length(surge),replace=TRUE)
   init[[i]] <- list(tau_add=1/var(diff(surge.samp)),tau_obs=5/var(surge.samp),tau_pres=1/var(surge.samp),tau_wind=1/var(surge.samp))
 }
-j.model   <- jags.model (file = textConnection(RandomWalk),
+j.model   <- jags.model (file = textConnection(SurgeModel),
                          data = data,
                          inits = init,
                          n.chains = 3)
@@ -130,17 +130,11 @@ ciEnvelope <- function(x,ylo,yhi,...){
 ci <- apply(out.pres.driven[,3:ncol(out.pres.driven)],2,quantile,c(0.025,0.5,0.975))
 ci<-ci[,1:length(time)]
 jpeg(file="~/SURGE/web/Present_DrivenWalk_Output.jpg")
-plot(time,ci[2,],type='l',ylim=range(-5:10,na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng], main="Driven Output up to Now")
+plot(time,ci[2,],type='l',ylim=range(-10:10,na.rm=TRUE),ylab="Surge Height",xlim=time[time.rng])
 ## adjust x-axis label to be monthly if zoomed
 if(diff(time.rng) < 100){ 
   axis.Date(1, at=seq(time[time.rng[1]],time[time.rng[2]],by='month'), format = "%Y-%m")
 }
 ciEnvelope(time,ci[1,],ci[3,],col="red")
-points(time,surge,pch="+",cex=0.3,col="lightblue")
-lines(time,ci[2,])
-legend("bottomleft", c("CI Interval","Obs","Model Output"), 
-       lty=c(1,2,1),
-       col=c("red","lightblue","black"),
-       lwd=c(2.5,2.5,2.5))
+points(time,surge,pch="+",cex=0.5)
 dev.off()
-
