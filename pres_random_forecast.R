@@ -8,9 +8,9 @@ lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+
 
 
 #weather_data = read.csv(paste(firstpart,date,lastpart)) 
-weather_data = list()
+weather_data_April = list()
 
-load("weather_data.Rdata")
+load("weather_data_April.Rdata")
 start = i
 for (i in start:(todaydate-startdate)) {  
   
@@ -19,15 +19,15 @@ for (i in start:(todaydate-startdate)) {
   met.url = paste(firstpart,date2,lastpart,sep="")
   # system(paste0("cd met; wget ",met.url))
   x = getURL(met.url)
-  weather_data[[i+1]] = read.csv(text=x) 
-  save(i,weather_data,file="weather_data.Rdata")
+  weather_data_April[[i+1]] = read.csv(text=x) 
+  save(i,weather_data_April,file="weather_data_April.Rdata")
 }
 
 
-wind = unlist(sapply(weather_data,function(x){x$Wind.SpeedMPH},simplify = TRUE))
-pres = unlist(sapply(weather_data,function(x){x$Sea.Level.PressureIn},simplify = TRUE))
+wind = unlist(sapply(weather_data_April,function(x){x$Wind.SpeedMPH},simplify = TRUE))
+pres = unlist(sapply(weather_data_April,function(x){x$Sea.Level.PressureIn},simplify = TRUE))
 pres[pres < 5] = NA
-dateUTC = unlist(sapply(weather_data,function(x){x$DateUTC},simplify = TRUE))
+dateUTC = unlist(sapply(weather_data_April,function(x){x$DateUTC},simplify = TRUE))
 
 day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T",tz="GMT")
 
