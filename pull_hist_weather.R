@@ -8,7 +8,7 @@ lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+
 ##weather_data = read.csv(paste(firstpart,date,lastpart)) 
 hist_weather_data2 = list()
 load("hist_weather_data2.Rdata")
-start = 1
+start = i
 for (i in start:(enddate-startdate)) {  
   
   print(i)
