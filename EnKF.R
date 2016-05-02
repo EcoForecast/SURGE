@@ -9,7 +9,7 @@ nstart = 600
 Nmcmc = length(tau_add)
 Nmc = 10  #number of MC iterations
 nt = 192 ## two day forecast
-MC = matrix(NA,Nmc,nt) #row=iteration, col=location
+##MC = matrix(NA,Nmc,nt) #row=iteration, col=location
 
 Xf = MC[,1]
 Y = surge[nstart+1]
@@ -29,4 +29,6 @@ EnKF <- function(Xf,Y,t){
   return(list(X.f=X.f,mu.a=mu.a,P.a=P.a))
 }
 
+for (t in nstart+1:nstart+nt){
 fx = EnKF(Xf,Y,t)
+}
