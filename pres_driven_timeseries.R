@@ -73,33 +73,38 @@ model{
 
 #### Data Model
 for(i in 1:n){
-tide.effect[i] ~ dnorm(tide_data[i],tau_obs)
+surge_data[i] ~ dnorm(surge_final[i],tau_obs)
 }
-for(i in 1:n){
-pressure.effect[i] ~ dnorm(pressure_data[i],tau_pres)
-}
-for(i in 1:n){
-wind.effect[i] ~ dnorm(wind_data[i],tau_wind)
-}
+#for(i in 1:n){
+#pressure.effect[i] ~ dnorm(pressure_data[i],tau_pres)
+#}
+#for(i in 1:n){
+#wind.effect[i] ~ dnorm(wind_data[i],tau_wind)
+#}
 
 #### Process Model
 for(i in 2:n){
-surge[i]<-(wind.effect[i]/beta ) * (9.8/(tide.effect[i]))*(pressure.effect[i]/beta)
-surge_final[i]~dnorm(((surge_final[i-1]+surge[i])/2),tau_add)
+##surge[i]<-(wind.data[i]/beta ) * (9.8/(tide.data[i]))*(pressure.data[i]/beta)
+  surge[i]<- tide_data[i] + beta1*(surge_final[i-1]-tide[i-1]) + beta2*pressure_data[i] + beta3*wind_data[i]
+  surge_final[i]~dnorm(surge[i],tau_add)
 }
 
 #### Priors
 surge_final[1] ~ dunif(-1,10)
 tau_obs ~ dgamma(a_obs,r_obs)
 tau_add ~ dgamma(a_add,r_add)
-tau_pres ~ dgamma(1,.1)
-tau_wind ~ dgamma(1,.1)
-beta ~ dnorm(25,0.16)
+#tau_pres ~ dgamma(1,.1)
+#tau_wind ~ dgamma(1,.1)
+#beta ~ dnorm(25,0.16)
+beta1 ~ dnorm(0,0.001)
+beta2 ~ dnorm(0,0.001)
+beta3 ~ dnorm(0,0.001)
 }
 "
 
-## MCMC       
-data <- list(tide_data=tide,pressure_data=pressure,wind_data=wind, n=length(surge),a_obs=1,r_obs=1,a_add=1,r_add=1)
+## MCMC
+nd = 1:600
+data <- list(surge_data =surge[nd],tide_data=tide[nd],pressure_data=pressure[nd],wind_data=wind[nd], n=length(nd),a_obs=1,r_obs=1,a_add=1,r_add=1)
 nchain = 3
 init <- list()
 for(i in 1:nchain){
@@ -112,15 +117,16 @@ j.model   <- jags.model (file = textConnection(SurgeModel),
                          n.chains = 3)
 
 jags.out   <- coda.samples (model = j.model,
-                            variable.names = c("surge_final","tau_add","tau_obs","tau_pres","tau_wind","beta"),
-                            n.iter = 100)
+#                            variable.names = c("surge_final","tau_add","tau_obs","tau_pres","tau_wind","beta"),
+                            variable.names = c("surge_final","tau_add","tau_obs","beta1","beta2","beta3"),
+                            n.iter = 1000)
 ##summary(jags.out)
 
 out.pres.driven <- as.matrix(jags.out)
 save(out.pres.driven, file="out.pres.driven.ofJAGS")
 
 
-time = 1:length(surge)
+time = nd
 time.rng = c(1,length(time)) ## adjust to zoom in and out
 ciEnvelope <- function(x,ylo,yhi,...){
   polygon(cbind(c(x, rev(x), x[1]), c(ylo, rev(yhi),
@@ -136,5 +142,5 @@ if(diff(time.rng) < 100){
   axis.Date(1, at=seq(time[time.rng[1]],time[time.rng[2]],by='month'), format = "%Y-%m")
 }
 ciEnvelope(time,ci[1,],ci[3,],col="red")
-points(time,surge,pch="+",cex=0.5)
+points(time,surge[nd],pch="+",cex=0.5)
 dev.off()
