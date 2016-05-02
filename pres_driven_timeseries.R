@@ -2,16 +2,16 @@ library(RCurl)
 ##Pull weather data
 todaydate = (Sys.Date() - 365)
 date = gsub("-","/",todaydate)
-startdate = as.Date("2015/04/01")
+startdate = as.Date("2015/03/01")
 
 firstpart = "https://www.wunderground.com/history/airport/EGFF/"
 lastpart = "/DailyHistory.html?req_city=Cardiff&req_state=&req_statename=United+Kingdom&reqdb.zip=00000&reqdb.magic=1&reqdb.wmo=03717&format=1"
 
 
 #weather_data = read.csv(paste(firstpart,date,lastpart)) 
-weather_data_April = list()
+weather_data = list()
 
-load("weather_data_April.Rdata")
+load("weather_data.Rdata")
 start = i
 for (i in start:(todaydate-startdate)) {  
   
@@ -20,14 +20,14 @@ for (i in start:(todaydate-startdate)) {
   met.url = paste(firstpart,date2,lastpart,sep="")
   # system(paste0("cd met; wget ",met.url))
   x = getURL(met.url)
-  weather_data_April[[i+1]] = read.csv(text=x) 
-  save(i,weather_data_April,file="weather_data_April.Rdata")
+  weather_data[[i+1]] = read.csv(text=x) 
+  save(i,weather_data,file="weather_data.Rdata")
 }
 
-wind = unlist(sapply(weather_data_April,function(x){x$Wind.SpeedMPH},simplify = TRUE))
-pres = unlist(sapply(weather_data_April,function(x){x$Sea.Level.PressureIn},simplify = TRUE))
+wind = unlist(sapply(weather_data,function(x){x$Wind.SpeedMPH},simplify = TRUE))
+pres = unlist(sapply(weather_data,function(x){x$Sea.Level.PressureIn},simplify = TRUE))
 pres[pres < 5] = NA
-dateUTC = unlist(sapply(weather_data_April,function(x){x$DateUTC},simplify = TRUE))
+dateUTC = unlist(sapply(weather_data,function(x){x$DateUTC},simplify = TRUE))
 day = strptime(sub(pattern = "<br />","",as.character(dateUTC)),format="%Y-%m-%d %T",tz="GMT")
 
 ##Pull tide data
@@ -84,8 +84,8 @@ surge_data[i] ~ dnorm(surge_final[i],tau_obs)
 
 #### Process Model
 for(i in 2:n){
-##surge[i]<-(wind.data[i]/beta ) * (9.8/(tide.data[i]))*(pressure.data[i]/beta)
-  surge[i]<- tide_data[i] + beta1*(surge_final[i-1]-tide[i-1]) + beta2*pressure_data[i] + beta3*wind_data[i]
+  surge[i]<- tide_data[i] + beta1*(surge_final[i-1]-tide_data[i-1]) + beta2*pressure_data[i] + beta3*wind_data[i]
+                                                 ## ^ modified from tide[i-1]
   surge_final[i]~dnorm(surge[i],tau_add)
 }
 

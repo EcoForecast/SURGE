@@ -1,3 +1,5 @@
+## Kalman Filter iterative forecast--one time step
+
 tau_add = 1/sqrt(out.pres.driven[,"tau_add"])
 tau_obs = mean(out.pres.driven[,"tau_obs"])
 beta1 = out.pres.driven[,"beta1"]
@@ -9,7 +11,7 @@ nstart = 600
 Nmcmc = length(tau_add)
 Nmc = 10  #number of MC iterations
 nt = 192 ## two day forecast
-MC = matrix(NA,Nmc,nt) #row=iteration, col=location
+##MC = matrix(NA,Nmc,nt) #row=iteration, col=location
 
 Xf = MC[,1]
 Y = surge[nstart+1]
@@ -29,4 +31,6 @@ EnKF <- function(Xf,Y,t){
   return(list(X.f=X.f,mu.a=mu.a,P.a=P.a))
 }
 
-fx = EnKF(Xf,Y,t)
+
+
+

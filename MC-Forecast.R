@@ -20,7 +20,7 @@ MC = matrix(NA,Nmc,nt) #row=iteration, col=location
 
 
 
-Wind = Tide_height = Pressure = Beta = rep(NA,Nmc) ## what is this for??
+## Wind = Tide_height = Pressure = Beta = rep(NA,Nmc) ## what is this for??
 ## in the step above all the variables have to be included from the final equation calculating surge.
 rand = sample.int(Nmcmc,Nmc,replace = TRUE)
 for(i in 1:Nmc){
@@ -50,7 +50,9 @@ ciEnvelope <- function(x,ylo,yhi,...){
 ci <- apply(MC,2,quantile,c(0.025,0.5,0.975)) ## meanMC is not a matrix, needs fixing
 #ci<-ci[,1:length(time)]
 
+jpeg(file="~/SURGE/web/Present_MC_Output.jpg")
 plot(1:nt,ci[2,], xlab="Time", type='l',ylim=range(ci))
 ciEnvelope(1:nt,ci[1,],ci[3,],col="lightblue")
 points(time[1:nt],surge[1:nt+nstart],pch="+",cex=0.5)
+dev.off()
 ```
