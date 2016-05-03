@@ -34,6 +34,7 @@ EnKF <- function(Xf,Y,t){
 }
 
 EnKF_output=matrix(data=NA,nrow=nt,ncol=12)
+colnames(EnKF_output) <- c("X.f[1]","X.f[2]","X.f[3]","X.f[4]","X.f[5]","X.f[6]","X.f[7]","X.f[8]","X.f[9]","X.f[10]","mu.a","P.a")
 for (t in 1:nt){
   fx = EnKF(Xf,surge[nstart+t],t)
   ##EnKF_output[[t+1]] = output
@@ -44,18 +45,19 @@ for (t in 1:nt){
   
 }
 
-nstart=nstart+nt
+#nstart=nstart+nt
+time=c(601:696)
+ci.a = matrix(NA,3,nt) 
+ci.a[2,] = EnKF_output[,11]
+ci.a[1,] = EnKF_output[,11]-1.96*EnKF_output[,12]
+ci.a[3,] = EnKF_output[,11]+1.96*EnKF_output[,12]
 
-time=length(nt)
+ci.f <- apply(EnKF_output[,1:10],1,quantile,c(0.025,0.5,0.975))
 
-for(t in 1:nt){
-  ##ci = rbind(EnKF_output[t,11]-1.96*sqrt(EnKF_output[t,12]),EnKF_output[t,11]+1.96*sqrt(EnKF_output[t,12]))
-  ##ci <- apply(MC,2,quantile,c(0.025,0.5,0.975))
-  ci<-apply(EnKF_output[t,11],2,quantile,c(0.025,0.5,0.975))
-  plot(time,EnKF_output[t,11],ylim=range(ci,na.rm=TRUE),xlim=c(1,696),type='n',main="Empty")
-  ciEnvelope(time,ci[1,],ci[2,],col="lightBlue")
-  lines(time,EnKF_output[t,11],col=4)
-  ##lines(time,Y[i,])
-}
+plot(time,EnKF_output[,11],ylim=range(ci,na.rm=TRUE),xlim=c(600,700),type='n',main="24-hour Forecast")
+ciEnvelope(time,ci.a[1,],ci.a[2,],col="lightBlue")
+ciEnvelope(time,ci.f[1,],ci.f[2,],col="lightGrey")
+lines(time,EnKF_output[,11],col=4)
+
 
 
