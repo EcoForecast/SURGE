@@ -31,6 +31,13 @@ EnKF <- function(Xf,Y,t){
   return(list(X.f=X.f,mu.a=mu.a,P.a=P.a))
 }
 
+EnKF(Xf,Y,1)
+## add fx to MC600 (MC600[2,nstart+t] = fx (X.f?). MC600[1/3,nstart+t] = 
+## mean(MC600[2,],na.rm=TRUE)(mu.a?) +/-(1.96* sd(MC600[2,], na.rm=TRUE) )
 
-
+fxlist = rep(NA, nt)
+for (t in 1:nt){
+  fx = EnKF(Xf,nstart+t,t)
+  fxlist[t] = fx$X.f ## X.f is list, fxlist isnt ## X.f is decimals, fxlist is large numbers...?
+}
 

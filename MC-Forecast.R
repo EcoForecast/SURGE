@@ -15,7 +15,7 @@ nstart = 600
 Nmcmc = length(tau_add)
 Nmc = 10  #number of MC iterations
 nt = 192 ## two day forecast
-MC = matrix(NA,Nmc,nt) #row=iteration, col=location
+##MC = matrix(NA,Nmc,nt) #row=iteration, col=location
 
 
 
@@ -47,8 +47,10 @@ ciEnvelope <- function(x,ylo,yhi,...){
   polygon(cbind(c(x, rev(x), x[1]), c(ylo, rev(yhi),
                                       ylo[1])), border = NA,...) 
 }
-ci <- apply(MC,2,quantile,c(0.025,0.5,0.975)) ## meanMC is not a matrix, needs fixing
+ci <- apply(MC,2,quantile,c(0.025,0.5,0.975)) 
 #ci<-ci[,1:length(time)]
+MC600 <- ci
+save(MC600, file="MC600")
 
 jpeg(file="~/SURGE/web/Present_MC_Output.jpg")
 plot(1:nt,ci[2,], xlab="Time", type='l',ylim=range(ci))
