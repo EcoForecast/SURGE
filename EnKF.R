@@ -42,3 +42,15 @@ for (t in 1:nt){
 }
 
 nstart=nstart+nt
+time=length(nt)
+
+for(t in 1:nt){
+  ##ci = rbind(EnKF_output[t,11]-1.96*sqrt(EnKF_output[t,12]),EnKF_output[t,11]+1.96*sqrt(EnKF_output[t,12]))
+  ##ci <- apply(MC,2,quantile,c(0.025,0.5,0.975))
+  ci<-apply(EnKF_output[t,11],2,quantile,c(0.025,0.5,0.975))
+  plot(time,EnKF_output[t,11],ylim=range(ci,na.rm=TRUE),xlim=c(1,696),type='n',main="Empty")
+  ciEnvelope(time,ci[1,],ci[2,],col="lightBlue")
+  lines(time,EnKF_output[t,11],col=4)
+  ##lines(time,Y[i,])
+}
+
