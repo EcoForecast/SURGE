@@ -7,9 +7,9 @@ taylor.diagram(ref= surge[(nstart+1):(nstart+nt)], model=EnKF_output[,11],normal
 dev.off()
 
 jpeg(file="~/SURGE/web/Predicted_Observed_Curves.jpg")
-plot(EnKF_output[,11], ylim=c(0, 7), xlab="Time", ylab="Surge Height", col="RED", type='l')
+plot(EnKF_output[,11], ylim=c(0, 7), xlab="Time", ylab="Surge Height", main="Predicted vs Observed",col="RED", type='l')
 lines(surge[(nstart+1):(nstart+nt)], col="Blue")
-legend(0,7, legend=c("Predicted", "Observed"), lty=c(1,1), lwd=c(2.5,2.5), col=c("Red", "Blue"))
+legend(0,7, legend=c("Predicted", "Observed"), cex=0.6,lty=c(1,1), lwd=c(2.5,2.5), col=c("Red", "Blue"))
 dev.off()
 
 ## messed up e vs o
