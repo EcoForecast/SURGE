@@ -1,0 +1,55 @@
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="generator" content="R package animation 2.4">
+	<title>Animations Using the R Language</title>
+	<link rel="stylesheet" href="css/reset.css" />
+	<link rel="stylesheet" href="css/styles.css" />
+	<link rel="stylesheet" href="css/scianimator.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/styles/github.min.css">
+
+	<script src="js/jquery-1.4.4.min.js"></script>
+	<script src="js/jquery.scianimator.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/highlight.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.3/languages/r.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+</head>
+<body>
+
+	<div class="scianimator"><div id="Rplot" style="display: inline-block;"></div></div>
+	<div class="scianimator" style="width: 800px; text-align: left"><pre><code class="r">## Animations generated in R version 3.2.1 (2015-06-18) using the package animation
+library(animation)
+library(plotrix)
+library(smfsb)
+library(xts)
+library(zoo)
+library(rjags)
+library(coda)
+library(chron)
+library(RCurl)
+library(bitops)
+for (i in 1:96) {
+    t = i
+    fx = EnKF(Xf, surge[600 + t], t)
+    EnKF_output[t, ] = t(as.matrix(unlist(fx)))
+    save(t, EnKF_output, file = "EnKF_Output.Rdata")
+    ci.f <- apply(EnKF_output[, 1:10], 1, quantile, c(0.025, 
+        0.5, 0.975))
+    plot(time[1:96], EnKF_output[1:96, 11], ylim = range(ci, 
+        na.rm = TRUE), xlim = c(600, 700), type = "n", ylab = "Surge Height in m", 
+        xlab = "Time", main = "24-hour Forecast")
+    ciEnvelope(time[1:96], ci.a[1, ], ci.a[2, ], col = "lightBlue")
+    ciEnvelope(time[1:96], ci.f[1, ], ci.f[2, ], col = "lightGrey")
+    lines(time[1:96], EnKF_output[, 11], col = 4)
+    points(time[1:i], surge[601:(600 + i)])
+}
+## R version 3.2.1 (2015-06-18)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Other packages: animation 2.4, plotrix 3.5-11, smfsb 1.1, xts 0.9-7, zoo 1.7-12, rjags 3-15,
+## coda 0.17-1, chron 2.3-45, RCurl 1.95-4.6, bitops 1.0-6</code></pre></div>
+	<script src="js/Rplot.js"></script>
+<!-- highlight R code -->
+
+</body>
+</html>

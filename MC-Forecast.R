@@ -13,14 +13,14 @@ surge.IC = out.pres.driven[,"surge_final[600]"] ## last time step
 
 nstart = 600
 Nmcmc = length(tau_add)
-Nmc = 10  #number of MC iterations
-nt = 192 ## two day forecast
-##MC = matrix(NA,Nmc,nt) #row=iteration, col=location
+Nmc = 1000  #number of MC iterations
+nt = 96 ## one day forecast
+MC = matrix(NA,Nmc,nt) #row=iteration, col=location
+
+time=c((nstart+1):(nstart+nt))
 
 
-
-
-## Wind = Tide_height = Pressure = Beta = rep(NA,Nmc) ## what is this for??
+##Wind = Tide_height = Pressure = Beta = rep(NA,Nmc) ## what is this for??
 ## in the step above all the variables have to be included from the final equation calculating surge.
 rand = sample.int(Nmcmc,Nmc,replace = TRUE)
 for(i in 1:Nmc){
@@ -47,14 +47,16 @@ ciEnvelope <- function(x,ylo,yhi,...){
   polygon(cbind(c(x, rev(x), x[1]), c(ylo, rev(yhi),
                                       ylo[1])), border = NA,...) 
 }
-ci <- apply(MC,2,quantile,c(0.025,0.5,0.975)) 
+ci <- apply(MC,2,quantile,c(0.025,0.5,0.975))
 #ci<-ci[,1:length(time)]
-MC600 <- ci
-save(MC600, file="MC600")
 
 jpeg(file="~/SURGE/web/Present_MC_Output.jpg")
-plot(1:nt,ci[2,], xlab="Time", type='l',ylim=range(ci))
-ciEnvelope(1:nt,ci[1,],ci[3,],col="lightblue")
-points(time[1:nt],surge[1:nt+nstart],pch="+",cex=0.5)
+plot(time,ci[2,], xlab="Time", ylab="Surge Height in m",type='l',ylim=range(ci),main="Monte Carlo Simulation")
+ciEnvelope((nstart+1):(nstart+nt),ci[1,],ci[3,],col="lightblue")
+lines(time,ci[2,])
+points(time,surge[(nstart+1):(nstart+nt)],pch="+",cex=0.5)
+legend(600,7,legend=c("CI","Forecast", "Observed"),lty=c(1,1,NA),lwd=c(2.5,2.5),col=c(1,"lightblue", 1),pch=c("","","+"))
 dev.off()
+
+
 ```
