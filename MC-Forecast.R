@@ -55,7 +55,7 @@ plot(time,ci[2,], xlab="Time", ylab="Surge Height in m",type='l',ylim=range(ci),
 ciEnvelope((nstart+1):(nstart+nt),ci[1,],ci[3,],col="lightblue")
 lines(time,ci[2,])
 points(time,surge[(nstart+1):(nstart+nt)],pch="+",cex=0.5)
-legend(600,7,legend=c("CI","Forecast", "Observed"),lty=c(1,1,NA),lwd=c(2.5,2.5),col=c(1,"lightblue", 1),pch=c("","","+"))
+legend(600,7,legend=c("Forecast","CI", "Observed"),cex=0.55,lty=c(1,1,NA),lwd=c(2.5,2.5),col=c(1,"lightblue", 1),pch=c("","","+"))
 dev.off()
 
 
